@@ -1,5 +1,7 @@
 using API.Extension;
 using Application;
+using Infrastructure.Identity;
+using Infrastructure.Identity.Extensions;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Contexts;
 using Infrastructure.Persistence.Extensions;
@@ -33,6 +35,7 @@ namespace API
         {
             services.AddApplicationServices();
             services.AddInfrastructurePersistenceServices(Configuration);
+            services.AddInfrastructureIdentityServices(Configuration);
             services.AddApiVersioningExtension();
             services.AddSwaggerExtension();
             services.AddHttpContextExtension();
@@ -44,7 +47,8 @@ namespace API
         {
             if (env.IsDevelopment())
             {
-                app.InitialiseDatabaseAsync();
+                app.InitialiseAppDatabaseAsync();
+                app.InitialiseIdentityDatabaseAsync();
                 app.UseDeveloperExceptionPage();
             }
 

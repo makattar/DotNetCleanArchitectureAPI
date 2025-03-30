@@ -22,6 +22,7 @@ namespace Infrastructure.Persistence
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mysqlOptions =>
                 {
                     mysqlOptions.CommandTimeout(25000);
+                    mysqlOptions.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
                 });
             });
 

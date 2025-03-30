@@ -1,34 +1,39 @@
-﻿using Infrastructure.Persistence.Contexts;
+﻿using Infrastructure.Identity.Contexts;
+using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
-
-namespace Infrastructure.Persistence.Extensions
+namespace Infrastructure.Identity.Extensions
 {
-    public static class InitialiserExtensions
+    public static class InitialiserExtension
     {
-        public static void InitialiseAppDatabaseAsync(this IApplicationBuilder app)
+        public static void InitialiseIdentityDatabaseAsync(this IApplicationBuilder app)
         {
             using var scope = app.ApplicationServices.CreateScope();
-            var initialiser = scope.ServiceProvider.GetRequiredService<ApplicationDbContextInitialiser>();
+            var initialiser = scope.ServiceProvider.GetRequiredService<IdentityDbContextInitialiser>();
             Task.WaitAll(initialiser.InitialiseAsync());
             Task.WaitAll(initialiser.SeedAsync());
         }
     }
-
-
-    public class ApplicationDbContextInitialiser
+    public class IdentityDbContextInitialiser
     {
-        private readonly ILogger<ApplicationDbContextInitialiser> _logger;
-        private readonly ApplicationDbContext _context;
-        public ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitialiser> logger, ApplicationDbContext context)
+        private readonly ILogger<IdentityDbContextInitialiser> _logger;
+        private readonly IdentityContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public IdentityDbContextInitialiser(ILogger<IdentityDbContextInitialiser> logger, IdentityContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             _logger = logger;
             _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task InitialiseAsync()
@@ -59,6 +64,8 @@ namespace Infrastructure.Persistence.Extensions
 
         public async Task TrySeedAsync()
         {
+            await Seeds.DefaultRoles.SeedAsync(_userManager, _roleManager);
+            await Seeds.DefaultSuperAdmin.SeedAsync(_userManager, _roleManager);
         }
     }
 }
