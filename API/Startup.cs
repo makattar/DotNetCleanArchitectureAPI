@@ -5,6 +5,7 @@ using Infrastructure.Identity.Extensions;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Contexts;
 using Infrastructure.Persistence.Extensions;
+using Infrastructure.Shared;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -18,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace API
 {
@@ -36,6 +38,7 @@ namespace API
             services.AddApplicationServices();
             services.AddInfrastructurePersistenceServices(Configuration);
             services.AddInfrastructureIdentityServices(Configuration);
+            services.AddSharedInfrastructure(Configuration);
             services.AddApiVersioningExtension();
             services.AddSwaggerExtension();
             services.AddHttpContextExtension();

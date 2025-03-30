@@ -1,4 +1,5 @@
-﻿using Infrastructure.Identity.Contexts;
+﻿using Domain.Settings;
+using Infrastructure.Identity.Contexts;
 using Infrastructure.Identity.Extensions;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
@@ -26,6 +27,7 @@ namespace Infrastructure.Identity
                     mysqlOptions.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName);
                 });
             });
+            services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
             services.AddScoped<IdentityDbContextInitialiser>();
 
